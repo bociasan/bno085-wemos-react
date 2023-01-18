@@ -13,8 +13,8 @@ bool rainbow = false; // The rainbow effect is turned off on startup
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 
-const char *ssid = "ESP8266 Access Point"; // The name of the Wi-Fi network that will be created
-const char *password = "thereisnospoon";   // The password required to connect to it, leave blank for an open network
+const char *ssid = "Wemos 3D Cube";      // The name of the Wi-Fi network that will be created
+const char *password = "thereisnospoon"; // The password required to connect to it, leave blank for an open network
 const char *mdnsName = "esp8266";
 
 void startWiFi()
@@ -25,7 +25,7 @@ void startWiFi()
   Serial.println("\" started\r\n");
 
   wifiMulti.addAP("BEAMLOGIC", "1234567890123"); // add Wi-Fi networks you want to connect to
-  // wifiMulti.addAP("ssid_from_AP_2", "your_password_for_AP_2");
+  wifiMulti.addAP("ProiectSCR", "studentscr");
   // wifiMulti.addAP("ssid_from_AP_3", "your_password_for_AP_3");
 
   Serial.println("Connecting");
@@ -78,6 +78,7 @@ void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
   {
   case WS_EVT_CONNECT:
     Serial.printf("WebSocket client #%u connected from %s\n", client->id(), client->remoteIP().toString().c_str());
+    ws.text(client->id(), "{\"IP\":\"" + WiFi.localIP().toString() + "\"}");
     break;
   case WS_EVT_DISCONNECT:
     Serial.printf("WebSocket client #%u disconnected\n", client->id());

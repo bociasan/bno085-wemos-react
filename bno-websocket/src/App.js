@@ -3,6 +3,7 @@ import Rectangle from "./components/Rectangle";
 import {useEffect, useState} from "react";
 
 function App() {
+    const [ip, setIp] = useState("")
     const [pri, setPri] = useState({})
     useEffect(() => {
         var gateway = `ws://192.168.1.169/ws`;
@@ -26,8 +27,15 @@ function App() {
         }
 
         function onMessage(event) {
-            const {imuData} = JSON.parse(event.data)
-            setPri(imuData)
+            const data = JSON.parse(event.data)
+            console.log(data)
+            if (data?.imuData) {
+                setPri(data.imuData)
+            }
+
+            if (data?.IP){
+                setIp(data.IP)
+            }
             // console.log(imuData)
         }
 
@@ -37,6 +45,7 @@ function App() {
             initWebSocket();
             initButton();
         }
+
         onLoad()
 
         function initButton() {
@@ -51,7 +60,13 @@ function App() {
 
     return (
         <div className="App">
-            <Rectangle pri={pri}/>
+            {
+                ip.length>0?
+                Object.keys(pri).length > 0 ?
+                    <Rectangle pri={pri} ip={ip}/>
+                    : "Don't have pri ..."
+                    : "Ip doesn't set ..."
+            }
         </div>
     );
 }
