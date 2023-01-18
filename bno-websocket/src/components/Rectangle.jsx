@@ -6,7 +6,7 @@ export default function Rectangle({pri}){
         <div className="scene">
             <div className="cube"
                  // style={{transform: `rotate3d(${pri.pitch}, ${pri.roll}, ${pri.yaw},3.14rad)`
-                 style={{transform: `translateZ(-100px) rotateZ(${pri.pitch}rad) rotateX(${pri.roll}rad)`
+                 style={{transform: `translateZ(-100px) rotateZ(${pri.pitch}rad) rotateX(${-pri.roll}rad) rotateY(${pri.yaw}rad)`
             }}>
                 <div className="cube__face cube__face--front">front</div>
                 <div className="cube__face cube__face--back">back</div>

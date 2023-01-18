@@ -34,7 +34,7 @@ body { font-family: sans-serif; }
   position: relative;
   transform-style: preserve-3d;
   transform: translateZ(-100px);
-  /*transition: transform 1s;*/
+  transition: transform 0.2s;
 }
 
 .cube.show-front  { transform: translateZ(-100px) rotateY(   0deg); }
