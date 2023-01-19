@@ -1,7 +1,7 @@
 import '../App.css';
 export default function Rectangle({pri}){
     // console.log(pri)
-    console.log(`transform: rotate3d(${pri.pitch}, ${pri.roll}, ${pri.yaw},3.14rad)`)
+    // console.log(`transform: rotate3d(${pri.pitch}, ${pri.roll}, ${pri.yaw},3.14rad)`)
     return (
         <div className="scene">
             <div className="cube"

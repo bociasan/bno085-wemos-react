@@ -5,6 +5,7 @@
 #include <ESP8266WiFiMulti.h>
 #include <ESP8266mDNS.h>
 #include "SparkFun_BNO080_Arduino_Library.h" // Click here to get the library: http://librarymanager/All#SparkFun_BNO080
+#include <credentials.h>
 BNO080 myIMU;
 
 ESP8266WiFiMulti wifiMulti;
@@ -13,8 +14,8 @@ bool rainbow = false; // The rainbow effect is turned off on startup
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 
-const char *ssid = "Wemos 3D Cube";      // The name of the Wi-Fi network that will be created
-const char *password = "thereisnospoon"; // The password required to connect to it, leave blank for an open network
+const char *ssid = APP_SSID;     // The name of the Wi-Fi network that will be created
+const char *password = APP_PSWD; // The password required to connect to it, leave blank for an open network
 const char *mdnsName = "esp8266";
 
 void startWiFi()
@@ -24,8 +25,8 @@ void startWiFi()
   Serial.print(ssid);
   Serial.println("\" started\r\n");
 
-  wifiMulti.addAP("BEAMLOGIC", "1234567890123"); // add Wi-Fi networks you want to connect to
-  wifiMulti.addAP("ProiectSCR", "studentscr");
+  wifiMulti.addAP(BEAMLOGIC_SSID, BEAMLOGIC_PSWD); // add Wi-Fi networks you want to connect to
+  wifiMulti.addAP(PROIECT_SCR_SSID, PROIECT_SCR_PSWD);
   // wifiMulti.addAP("ssid_from_AP_3", "your_password_for_AP_3");
 
   Serial.println("Connecting");
@@ -109,6 +110,8 @@ struct ImuData
   float roll = 0;
   float pitch = 0;
   float yaw = 0;
+  unsigned long date = 0;
+  long refreshRate = 0;
 } imuData;
 
 String getQuatJsonStringFromData(ImuData imuData)
@@ -124,9 +127,9 @@ String getQuatJsonStringFromData(ImuData imuData)
 String getPRYJsonStringFromData(ImuData imuData)
 {
   char result[256];
-  char *formatedMessage = "{\"imuData\":{\"roll\":%f, \"pitch\":%f, \"yaw\":%f}}";
+  char *formatedMessage = "{\"imuData\":{\"roll\":%f, \"pitch\":%f, \"yaw\":%f, \"date\":%lu, \"refreshRate\":%d}}";
   snprintf(result, sizeof(result), formatedMessage,
-           imuData.roll, imuData.pitch, imuData.yaw);
+           imuData.roll, imuData.pitch, imuData.yaw, imuData.date, imuData.refreshRate);
   return result;
 }
 
@@ -184,6 +187,9 @@ void loop()
     imuData.roll = myIMU.getRoll();
     imuData.pitch = myIMU.getPitch();
     imuData.yaw = myIMU.getYaw();
+    unsigned long now = millis();
+    imuData.refreshRate = now - imuData.date;
+    imuData.date = millis();
 
     notifyClients();
 

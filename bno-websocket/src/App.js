@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 function App() {
     const [ip, setIp] = useState("")
     const [pri, setPri] = useState({})
+    const [date, setDate] = useState({date: -10})
     useEffect(() => {
         var gateway = `ws://192.168.1.169/ws`;
         var websocket;
@@ -28,9 +29,15 @@ function App() {
 
         function onMessage(event) {
             const data = JSON.parse(event.data)
-            console.log(data)
+            // console.log(data)
             if (data?.imuData) {
+                // console.log(data?.imuData?.date, pri?.date)
+
+                // if (pri?.date && data?.imuData?.date){
+                //     setDate({date:data.imuData.date - pri.date})
+                // }
                 setPri(data.imuData)
+
             }
 
             if (data?.IP){
@@ -60,6 +67,9 @@ function App() {
 
     return (
         <div className="App">
+            {
+                pri.refreshRate ? <div style={{width: 10, height: 10}}>{pri.refreshRate}</div> : "No refresh data."
+            }
             {
                 ip.length>0?
                 Object.keys(pri).length > 0 ?
